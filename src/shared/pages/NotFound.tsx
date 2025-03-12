@@ -1,11 +1,14 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 
 const NotFound: React.FC = () => {
+    const { t } = useTranslation();
+
     return (
         <div>
-            <h2>404 - Không tìm thấy trang</h2>
-            <Link to="/">Quay lại trang chủ</Link>
+            <h2>{t('pageNotFound')}</h2>
+            <Link to="/">{t('returnToHomepage')}</Link>
         </div>
     );
 };
