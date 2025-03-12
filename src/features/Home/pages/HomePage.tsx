@@ -5,11 +5,11 @@ const HomePage: React.FC = () => {
     const { t } = useTranslation();
 
     return (
-        <div className="min-h-screen bg-white dark:bg-gray-900 
-                    text-gray-900 dark:text-gray-100 
+        <div className="min-h-screen dark:bg-gray-900 
+                    text-gray-700 dark:text-gray-100 
                     transition-colors duration-200">
             <div className="container mx-auto p-4">
-                <h1 className="text-3xl font-bold mb-4">
+                <h1 className="text-6xl font-bold mb-4">
                     Theme Switcher Demo
                 </h1>
 
