@@ -4,7 +4,9 @@ const HomePage: React.FC = () => {
     const { t } = useTranslation();
 
     return (
-        <h1>{t("home")}</h1>
+        <h1 className="text-xl font-bold underline">
+            {t('home')}
+        </h1>
     );
 };
 
