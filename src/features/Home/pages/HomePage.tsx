@@ -10,7 +10,7 @@ const HomePage: React.FC = () => {
                     transition-colors duration-200">
             <div className="container mx-auto p-4">
                 <h1 className="text-6xl font-bold mb-4">
-                    Theme Switcher Demo
+                    {t('home')}
                 </h1>
 
                 <ThemeToggle />
