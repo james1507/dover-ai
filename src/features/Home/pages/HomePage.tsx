@@ -1,23 +1,43 @@
-import ThemeToggle from "@shared/components/themes/ThemeToggle";
-import { useTranslation } from "react-i18next";
+import { useState, useEffect, useRef } from "react";
+import HomeTopBar from "@features/Home/components/HomeTopBar";
+import ModelList from "../components/ModelList";
+import DistributionList from "../components/DistributionList";
 
 const HomePage: React.FC = () => {
-    const { t } = useTranslation();
+    const [hasShadow, setHasShadow] = useState(false);
+    const scrollContainerRef = useRef<HTMLDivElement>(null);
+    const [activeTab, setActiveTab] = useState("model");
+
+    useEffect(() => {
+        const handleScroll = () => {
+            if (scrollContainerRef.current) {
+                setHasShadow(scrollContainerRef.current.scrollTop > 0);
+            }
+        };
+
+        const container = scrollContainerRef.current;
+        if (container) {
+            container.addEventListener("scroll", handleScroll);
+        }
+
+        return () => {
+            if (container) {
+                container.removeEventListener("scroll", handleScroll);
+            }
+        };
+    }, []);
 
     return (
-        <div className="min-h-screen dark:bg-gray-900 
-                    text-gray-700 dark:text-gray-100 
-                    transition-colors duration-200">
-            <div className="container mx-auto p-4">
-                <h1 className="text-6xl font-bold mb-4">
-                    {t('home')}
-                </h1>
+        <div className="h-screen flex flex-col text-gray-700 dark:text-gray-100 transition-colors duration-200">
+            <div
+                className={`sticky top-0 z-10 bg-gray-900 transition-shadow duration-300 ${hasShadow ? "shadow-lg shadow-white/2" : "shadow-none"
+                    }`}
+            >
+                <HomeTopBar activeTab={activeTab} setActiveTab={setActiveTab} />
+            </div>
 
-                <ThemeToggle />
-
-                <div className="mt-4 p-4 bg-gray-100 dark:bg-gray-800 rounded-lg">
-                    <p>This is a sample content with theme support</p>
-                </div>
+            <div className="flex-1 overflow-y-auto">
+                {activeTab === "model" ? <ModelList /> : <DistributionList />}
             </div>
         </div>
     );

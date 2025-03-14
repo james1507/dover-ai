@@ -1,5 +1,10 @@
 {
+    "doverAI": "Dover AI",
     "home": "Home",
     "pageNotFound": "404 - Page Not Found",
-    "returnToHomepage": "Return to homepage"
+    "returnToHomepage": "Return to homepage",
+    "account": "Account",
+    "profile": "Profile",
+    "support": "Support",
+    "logout": "Logout"
 }

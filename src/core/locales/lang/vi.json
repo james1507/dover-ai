@@ -1,5 +1,10 @@
 {
+    "doverAI": "Dover AI",
     "home": "Trang chủ",
     "pageNotFound": "404 - Không tìm thấy trang",
-    "returnToHomepage": "Quay lại trang chủ"
+    "returnToHomepage": "Quay lại trang chủ",
+    "account": "Tài khoản",
+    "profile": "Hồ sơ",
+    "support": "Hỗ trợ",
+    "logout": "Đăng xuất"
 }
