@@ -1,78 +1,87 @@
-import { dockerService } from "@core/services/dockerService";
-import { useState } from "react";
+import { systemService } from "@core/services/systemService";
+import { useEffect, useState } from "react";
 
-const BackgroundRemoveContainer = () => {
-    const [loading, setLoading] = useState(false);
-    const [containerId, setContainerId] = useState<string | null>(null);
-    const [outputPath, setOutputPath] = useState<string | null>(null);
-    const [base64Image, setBase64Image] = useState<string | null>(null);
-    const [error, setError] = useState<string | null>(null);
-    const [progress, setProgress] = useState<{ message: string; percentage: number } | null>(null);
+interface DiskInfo {
+  name: string;
+  total_space: number;
+  available_space: number;
+}
 
-    const handleRunContainer = async () => {
-        setLoading(true);
-        setError(null);
-        setOutputPath(null);
-        setBase64Image(null);
-        setProgress({ message: "Starting...", percentage: 0 });
+interface SystemInfo {
+  total_memory: number;
+  used_memory: number;
+  total_swap: number;
+  used_swap: number;
+  cpu_usage: number;
+  disk_space: DiskInfo[];
+  cpu_name: string;
+  gpu_name: string | null;
+  system_name: string;
+}
 
-        try {
-            const id = await dockerService.pullAndRunImage("dovername/hyratek_rmbg", (progressUpdate) => {
-                setProgress(progressUpdate);
-            });
-            setContainerId(id);
+const DistributionList = () => {
+  const [systemInfo, setSystemInfo] = useState<SystemInfo | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
-            const copiedFilePath = await dockerService.copyFromDocker(
-                "dovername_hyratek_rmbg_container",
-                "/app/output.png"
-            );
-            setOutputPath(copiedFilePath);
-
-            const base64Data = await dockerService.readImageFile(copiedFilePath);
-            setBase64Image(base64Data);
-        } catch (err) {
-            setError(`Lỗi: ${err}`);
-        } finally {
-            setLoading(false);
-        }
+  useEffect(() => {
+    // Hàm lấy thông tin hệ thống
+    const fetchSystemInfo = async () => {
+      try {
+        const info = await systemService.getSystemInfo();
+        setSystemInfo(info);
+      } catch (err) {
+        setError("Không thể lấy thông tin hệ thống");
+        console.error(err);
+      }
     };
 
-    return (
-        <div className="p-4">
-            <h2 className="text-xl font-semibold mb-4">Chạy</h2>
-            <button
-                className="px-4 py-2 bg-blue-500 text-white rounded-md disabled:opacity-50"
-                onClick={handleRunContainer}
-                disabled={loading}
-            >
-                {loading ? "Đang chạy..." : "Chạy Container"}
-            </button>
+    // Gọi lần đầu tiên
+    fetchSystemInfo();
 
-            {/* Progress Bar */}
-            {progress && (
-                <div className="mt-4">
-                    <p className="text-gray-600 mb-2">
-                        {progress.message} ({progress.percentage.toFixed(1)}%)
-                    </p>
-                    <div className="w-full bg-gray-200 rounded-full h-4">
-                        <div
-                            className="bg-blue-500 h-4 rounded-full transition-all duration-300"
-                            style={{ width: `${progress.percentage}%` }}
-                        ></div>
-                    </div>
-                </div>
-            )}
+    // Thiết lập interval để cập nhật mỗi 1 giây
+    const intervalId = setInterval(fetchSystemInfo, 1000);
 
-            {containerId && <p className="mt-4 text-green-600">Container ID: {containerId}</p>}
-            {outputPath && <p className="mt-4 text-blue-600">File copied: {outputPath}</p>}
-            {base64Image && (
-                <div className="mt-4">
-                    <img src={`data:image/png;base64,${base64Image}`} alt="Output" className="max-w-full h-auto" />
-                </div>
-            )}
-            {error && <p className="mt-4 text-red-600">{error}</p>}
-        </div>
-    );
+    // Cleanup interval khi component unmount
+    return () => clearInterval(intervalId);
+  }, []);
+
+  return (
+    <div className="flex min-h-screen">
+      {/* Cột trái: Thông tin hệ thống */}
+      <div className="w-1/3 p-4 bg-gray-100 border-r border-gray-200">
+        <h2 className="text-xl font-semibold mb-4">Thông tin hệ thống</h2>
+        {error && <p className="text-red-500">{error}</p>}
+        {systemInfo ? (
+          <div>
+            <p><strong>Hệ điều hành:</strong> {systemInfo.system_name}</p>
+            <p><strong>Tên CPU:</strong> {systemInfo.cpu_name}</p>
+            <p><strong>Tên GPU:</strong> {systemInfo.gpu_name || "Không xác định"}</p>
+            <p><strong>RAM Tổng:</strong> {(systemInfo.total_memory / 1024 / 1024).toFixed(2)} MB</p>
+            <p><strong>RAM Đã dùng:</strong> {(systemInfo.used_memory / 1024 / 1024).toFixed(2)} MB</p>
+            <p><strong>Swap Tổng:</strong> {(systemInfo.total_swap / 1024 / 1024).toFixed(2)} MB</p>
+            <p><strong>Swap Đã dùng:</strong> {(systemInfo.used_swap / 1024 / 1024).toFixed(2)} MB</p>
+            <p><strong>CPU Usage:</strong> {systemInfo.cpu_usage.toFixed(2)}%</p>
+            <h3 className="mt-4 font-semibold">Danh sách ổ đĩa:</h3>
+            <ul className="list-disc ml-5">
+              {systemInfo.disk_space.map((disk, index) => (
+                <li key={index}>
+                  {disk.name}: {(disk.available_space / 1024 / 1024 / 1024).toFixed(2)} GB / {(disk.total_space / 1024 / 1024 / 1024).toFixed(2)} GB
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : (
+          <p>Đang tải thông tin hệ thống...</p>
+        )}
+      </div>
+
+      {/* Cột phải: Nội dung DistributionList */}
+      <div className="w-2/3 p-4">
+        <h2 className="text-xl font-semibold mb-4">Danh sách phân phối</h2>
+        <p>Thông tin về các mô hình phân phối sẽ hiển thị ở đây...</p>
+      </div>
+    </div>
+  );
 };
 
-export default BackgroundRemoveContainer;
+export default DistributionList;

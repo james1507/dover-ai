@@ -8,7 +8,7 @@ interface OurModel {
 }
 
 const albums: OurModel[] = [
-    { title: "Background Removal", artist: "Shanchez", image: "https://a.storyblok.com/f/160496/1472x981/9bf40ad4ff/bg-removal-slider-v2artboard-1-copy.png" },
+    { title: "BackgroundRm", artist: "Shanchez", image: "https://a.storyblok.com/f/160496/1472x981/9bf40ad4ff/bg-removal-slider-v2artboard-1-copy.png" },
     { title: "Image Upscale", artist: "Dover", image: "https://i.ytimg.com/vi/HR7o8SQlmBk/maxresdefault.jpg" },
     { title: "Face Swap", artist: "James", image: "https://www.vidau.ai/wp-content/uploads/2024/09/unnamed-15.png" },
     { title: "Audio Clean", artist: "Tamkend", image: "https://massive.io/wp-content/uploads/2024/10/AI-audio-cleanup.jpg" },

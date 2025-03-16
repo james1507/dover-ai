@@ -12,7 +12,7 @@ const albums: ModelInfer[] = [
     { title: "Text To Speech", artist: "Dover", image: "https://asia-1-fileserver-2.stringee.com/0/asia-1_1_5VZ52RKUPI06OGI/1691653065-184EE482-C9B1-4A63-87DE-0C1ABEEC65F1.jpeg" },
     { title: "Stable Diffusion", artist: "James", image: "https://www.wepc.com/wp-content/uploads/2023/06/How-to-install-Stable-Diffusion.png" },
     { title: "Spelling", artist: "Tamkend", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRbvIZKSA8c9M-4Q2lk6OGvjh6XAafSURX68A&s" },
-    { title: "Background Remove", artist: "Nathand", image: "https://js.pngtree.com/astro_images/bg-remover/ai-background-remover.png" },
+    { title: "BackgroundRm", artist: "Nathand", image: "https://js.pngtree.com/astro_images/bg-remover/ai-background-remover.png" },
     { title: "Lammand", artist: "Phias", image: "https://photo2.tinhte.vn/data/attachment-files/2024/09/8465306_cover-meta-llama3.2.jpg" },
     { title: "Lammand 2", artist: "Unknown", image: "https://photo2.tinhte.vn/data/attachment-files/2024/09/8465306_cover-meta-llama3.2.jpg" },
 ];
