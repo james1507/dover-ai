@@ -3,16 +3,17 @@ import { setupListeners } from '@reduxjs/toolkit/query';
 import themeReducer from '@core/theme/themeSlice';
 import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
-
+import { authReducer } from '@features/Authentication/store/authSlice';
 
 const rootReducer = combineReducers({
     theme: themeReducer,
+    auth: authReducer,
 });
 
 const persistConfig = {
     key: 'root',
     storage,
-    whitelist: ['theme'],
+    whitelist: ['theme', 'auth'],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

@@ -1,9 +1,11 @@
 import { useState } from "react";
+import { useDispatch } from "react-redux";
 import ThemeToggle from "@shared/components/themes/ThemeToggle";
 import reactLogo from '@assets/react.svg';
 import avatar from '@assets/avatar.jpg';
 import { useTranslation } from "react-i18next";
 import { User, Settings, HelpCircle, LogOut } from "lucide-react";
+import { logout } from "@features/Authentication/store/authSlice";
 
 interface HomeTopBarProps {
     activeTab: string;
@@ -12,7 +14,12 @@ interface HomeTopBarProps {
 
 const HomeTopBar: React.FC<HomeTopBarProps> = ({ activeTab, setActiveTab }) => {
     const { t } = useTranslation();
+    const dispatch = useDispatch();
     const [isOpen, setIsOpen] = useState(false);
+
+    const handleLogout = () => {
+        dispatch(logout());
+    };
 
     return (
         <div className="w-full px-4 py-3 flex justify-between items-center bg-white text-black dark:bg-[#121212] dark:text-white">
@@ -59,7 +66,10 @@ const HomeTopBar: React.FC<HomeTopBarProps> = ({ activeTab, setActiveTab }) => {
                             <button className="w-full flex items-center px-4 py-2 hover-effect">
                                 <HelpCircle className="w-5 h-5 mr-2" />{t('support')}
                             </button>
-                            <button className="w-full flex items-center px-4 py-2 text-red-500 hover-effect">
+                            <button
+                                onClick={handleLogout}
+                                className="w-full flex items-center px-4 py-2 text-red-500 hover-effect"
+                            >
                                 <LogOut className="w-5 h-5 mr-2" />{t('logout')}
                             </button>
                         </div>

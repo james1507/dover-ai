@@ -1,5 +1,6 @@
 import { invoke } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
+import { appService } from "./appService";
 
 interface ProgressUpdate {
     message: string;
@@ -18,16 +19,16 @@ class DockerService {
                 });
 
                 const containerId = await invoke<string>("pull_and_run_docker_image", { image });
-                console.log("Container started with ID:", containerId);
+                await appService.appLog(`Container started with ID: ${containerId}`);
                 unlisten();
                 return containerId;
             } else {
                 const containerId = await invoke<string>("pull_and_run_docker_image", { image });
-                console.log("Container started with ID:", containerId);
+                await appService.appLog(`Container started with ID: ${containerId}`);
                 return containerId;
             }
         } catch (error) {
-            console.error("Error pulling or running Docker image:", error);
+            await appService.appLog(`Error pulling or running Docker image: ${error}`);
             throw error;
         }
     }
@@ -38,10 +39,10 @@ class DockerService {
                 containerName,
                 containerPath,
             });
-            console.log("File copied from container:", outputPath);
+            await appService.appLog(`File copied from container: ${outputPath}`);
             return outputPath;
         } catch (error) {
-            console.error("Error copying file from Docker container:", error);
+            await appService.appLog(`Error copying file from Docker container: ${error}`);
             throw error;
         }
     }
@@ -51,7 +52,7 @@ class DockerService {
             const base64Image = await invoke<string>("read_image_file", { filePath });
             return base64Image;
         } catch (error) {
-            console.error("Error reading image file:", error);
+            await appService.appLog(`Error reading image file: ${error}`);
             throw error;
         }
     }

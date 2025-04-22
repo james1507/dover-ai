@@ -10,6 +10,10 @@
     @apply bg-[#F5F5F5] text-black dark:bg-[#121212] dark:text-white;
   }
 
+  .secondary-bg {
+    @apply bg-white dark:bg-[#1E1E1E];
+  }
+
   .hover-effect {
     @apply hover:bg-gray-100 dark:hover:bg-white/10;
   }
