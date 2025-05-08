@@ -4,10 +4,12 @@ import themeReducer from '@core/theme/themeSlice';
 import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import { authReducer } from '@features/Authentication/store/authSlice';
+import { homeReducer } from '@features/Home/store/homeSlice';
 
 const rootReducer = combineReducers({
     theme: themeReducer,
     auth: authReducer,
+    home: homeReducer,
 });
 
 const persistConfig = {

@@ -33,4 +33,6 @@ wgpu = "0.20.1"
 pollster = "0.4.0"
 nvml-wrapper = "0.9.0"
 raw-cpuid = "11.5.0"
+parking_lot = "0.12"
+once_cell = "1.18"
 

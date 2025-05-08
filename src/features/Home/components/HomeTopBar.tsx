@@ -1,11 +1,12 @@
 import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import ThemeToggle from "@shared/components/themes/ThemeToggle";
 import reactLogo from '@assets/react.svg';
 import avatar from '@assets/avatar.jpg';
 import { useTranslation } from "react-i18next";
 import { User, Settings, HelpCircle, LogOut } from "lucide-react";
 import { logout } from "@features/Authentication/store/authSlice";
+import { RootState } from "@core/store/store";
 
 interface HomeTopBarProps {
     activeTab: string;
@@ -16,6 +17,7 @@ const HomeTopBar: React.FC<HomeTopBarProps> = ({ activeTab, setActiveTab }) => {
     const { t } = useTranslation();
     const dispatch = useDispatch();
     const [isOpen, setIsOpen] = useState(false);
+    const user = useSelector((state: RootState) => state.auth.user);
 
     const handleLogout = () => {
         dispatch(logout());
@@ -56,7 +58,14 @@ const HomeTopBar: React.FC<HomeTopBarProps> = ({ activeTab, setActiveTab }) => {
                     </button>
 
                     {isOpen && (
-                        <div className="absolute right-0 mt-2 w-48 border border-gray-300 dark:border-gray-700 rounded-lg shadow-lg z-50 bg-white dark:bg-[#282828]">
+                        <div className="absolute right-0 mt-2 w-64 border border-gray-300 dark:border-gray-700 rounded-lg shadow-lg z-50 bg-white dark:bg-[#282828]">
+                            {user && (
+                                <div className="p-4 border-b border-gray-200 dark:border-gray-700">
+                                    <p className="font-semibold text-sm">{user.name}</p>
+                                    <p className="text-sm text-gray-500 dark:text-gray-400">{user.email}</p>
+                                    <p className="text-sm text-gray-500 dark:text-gray-400">Balance: ${user.balance}</p>
+                                </div>
+                            )}
                             <button className="w-full flex items-center px-4 py-2 hover-effect">
                                 <User className="w-5 h-5 mr-2" />{t('account')}
                             </button>

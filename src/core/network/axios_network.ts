@@ -13,18 +13,24 @@ const apiClient = axios.create({
 // Request interceptor
 apiClient.interceptors.request.use(
     (config) => {
-        const token = "";
-        if (token) {
-            config.headers.Authorization = `Bearer ${token}`;
+        try {
+            // Add null check for state and aut
+            
+            // if (accessToken) {
+            //     config.headers = config.headers || {};
+            //     config.headers.Authorization = `Bearer ${accessToken}`;
+            // }
+        } catch (error) {
+            console.error('Error setting auth header:', error);
         }
 
         // Log request details
         const requestLog = `
-🚀 API Request:
-URL: ${config.baseURL}${config.url}
-Method: ${config.method?.toUpperCase()}
-Headers: ${JSON.stringify(config.headers, null, 2)}
-Body: ${JSON.stringify(config.data, null, 2)}
+            ➜ API Request:
+            URL: ${config.baseURL}${config.url}
+            Method: ${config.method?.toUpperCase()}
+            Headers: ${JSON.stringify(config.headers, null, 2)}
+            Body: ${JSON.stringify(config.data, null, 2)}
         `;
         appService.appLog(requestLog);
 
@@ -42,11 +48,11 @@ apiClient.interceptors.response.use(
     (response) => {
         // Log successful response
         const responseLog = `
-✅ API Response Success:
-URL: ${response.config.baseURL}${response.config.url}
-Status: ${response.status}
-StatusText: ${response.statusText}
-Data: ${JSON.stringify(response.data, null, 2)}
+            🟢 API Response Success:
+            URL: ${response.config.baseURL}${response.config.url}
+            Status: ${response.status}
+            StatusText: ${response.statusText}
+            Data: ${JSON.stringify(response.data, null, 2)}
         `;
         appService.appLog(responseLog);
 
@@ -55,12 +61,12 @@ Data: ${JSON.stringify(response.data, null, 2)}
     (error) => {
         // Log error response
         const errorLog = `
-❌ API Response Error:
-URL: ${error.config.baseURL}${error.config.url}
-Status: ${error.response?.status}
-StatusText: ${error.response?.statusText}
-Error Message: ${error.message}
-Response Data: ${JSON.stringify(error.response?.data, null, 2)}
+            ✖ API Response Error:
+            URL: ${error.config.baseURL}${error.config.url}
+            Status: ${error.response?.status}
+            StatusText: ${error.response?.statusText}
+            Error Message: ${error.message}
+            Response Data: ${JSON.stringify(error.response?.data, null, 2)}
         `;
         appService.appLog(errorLog);
 

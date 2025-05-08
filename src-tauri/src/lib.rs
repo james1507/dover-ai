@@ -42,8 +42,8 @@ fn log_message(message: String) {
 /// There are all function that are used for device
 
 #[tauri::command]
-fn get_system_info() -> device_service::SystemInfo {
-    device_service::get_system_info()
+async fn get_system_info() -> device_service::SystemInfo {
+    device_service::get_system_info().await
 }
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]

@@ -1,6 +1,14 @@
 use serde::Serialize;
 use sysinfo::{Disks, System};
 use std::process::Command;
+use parking_lot::Mutex;
+use std::sync::Arc;
+use tokio::task;
+
+// Initialize system info handler
+static SYSTEM: once_cell::sync::Lazy<Arc<Mutex<System>>> = once_cell::sync::Lazy::new(|| {
+    Arc::new(Mutex::new(System::new_all()))
+});
 
 //
 // Structs
@@ -152,20 +160,50 @@ fn get_intel_gpu_usage() -> Option<f32> {
 //
 // System General Info
 //
-pub fn get_system_info() -> SystemInfo {
-    let mut sys = System::new_all();
-    sys.refresh_all();
+pub async fn get_system_info() -> SystemInfo {
+    // Perform heavy operations in a separate thread
+    let system_info = task::spawn_blocking(move || {
+        let mut sys = SYSTEM.lock();
+        
+        // Use refresh_all() to update all system information at once
+        sys.refresh_all();
+        
+        let cpu_usage = get_cpu_usage(&sys);
+        let cpu_name = get_cpu_name(&sys);
+        let total_memory = get_total_memory(&sys);
+        let used_memory = get_used_memory(&sys);
+        let total_swap = get_total_swap(&sys);
+        let used_swap = get_used_swap(&sys);
+        
+        let disk_space = get_disk_info();
+        let gpu_name = get_gpu_name();
+        let gpu_usage = get_gpu_usage();
+        let system_name = System::name().unwrap_or_else(|| "Unknown OS".to_string());
 
-    SystemInfo {
-        total_memory: get_total_memory(&sys),
-        used_memory: get_used_memory(&sys),
-        total_swap: get_total_swap(&sys),
-        used_swap: get_used_swap(&sys),
-        cpu_usage: get_cpu_usage(&sys),
-        disk_space: get_disk_info(),
-        cpu_name: get_cpu_name(&sys),
-        gpu_name: get_gpu_name(),
-        gpu_usage: get_gpu_usage(),
-        system_name: System::name().unwrap_or_else(|| "Unknown OS".to_string()),
-    }
+        SystemInfo {
+            total_memory,
+            used_memory,
+            total_swap,
+            used_swap,
+            cpu_usage,
+            disk_space,
+            cpu_name,
+            gpu_name,
+            gpu_usage,
+            system_name,
+        }
+    }).await.unwrap_or_else(|_| SystemInfo {
+        total_memory: 0,
+        used_memory: 0,
+        total_swap: 0,
+        used_swap: 0,
+        cpu_usage: 0.0,
+        disk_space: vec![],
+        cpu_name: "Error".to_string(),
+        gpu_name: None,
+        gpu_usage: None,
+        system_name: "Unknown".to_string(),
+    });
+
+    system_info
 }

@@ -1,27 +1,13 @@
-import React, { useEffect } from "react";
-import { BrowserRouter, Route, Routes, Navigate, RouteObject, useLocation } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import React from "react";
+import { BrowserRouter, Route, Routes, Navigate, RouteObject } from "react-router-dom";
+import {  useSelector } from "react-redux";
 import HomePage from "@features/Home/pages/HomePage";
 import ModelInferencingPage from "@features/ModelInferencing/pages/ModelInferencingPage";
 import NotFound from "@shared/pages/NotFound";
 import LoginPage from "@features/Authentication/pages/LoginPage";
 import RegisterPage from "@features/Authentication/pages/RegisterPage";
 import { RootState } from "@core/store/store";
-import { appService } from "@core/services/appService";
-import { clearAuthState } from "@features/Authentication/store/authSlice";
-
-const RouteLogger: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    const location = useLocation();
-    const dispatch = useDispatch();
-
-    useEffect(() => {
-        appService.appLog(`Current route: ${location.pathname}`);
-        console.log(`Current route: ${location.pathname}`);
-        dispatch(clearAuthState());
-    }, [location, dispatch]);
-
-    return <>{children}</>;
-};
+import RouteLogger from "@shared/components/RouteLogger";
 
 
 const authenticatedRoutes: RouteObject[] = [
@@ -45,6 +31,7 @@ const AppRoutes: React.FC = () => {
     return (
         <BrowserRouter>
             <RouteLogger>
+                
                 <Routes>
                     {currentRoutes.map(({ path, element }) => (
                         <Route key={path} path={path} element={element} />

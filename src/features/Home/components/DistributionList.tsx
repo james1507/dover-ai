@@ -1,4 +1,4 @@
-import { systemService } from "@core/services/systemService";
+import * as systemService from "@core/services/systemService";
 import { useEffect, useState } from "react";
 import { Cpu, HardDrive, MemoryStick, Monitor, Server } from "lucide-react";
 
@@ -29,7 +29,9 @@ const DistributionList = () => {
         const fetchSystemInfo = async () => {
             try {
                 const info = await systemService.getSystemInfo();
-                setSystemInfo(info);
+                if (info) {
+                    setSystemInfo(info);
+                }
             } catch (err) {
                 console.error("Lỗi khi lấy thông tin hệ thống:", err);
                 setError("Không thể lấy thông tin hệ thống");

@@ -995,6 +995,8 @@ dependencies = [
  "bollard",
  "futures-util",
  "nvml-wrapper",
+ "once_cell",
+ "parking_lot",
  "pollster",
  "raw-cpuid",
  "reqwest 0.10.10",
